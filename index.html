@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">Loading...</title>
+  <meta name="description" id="page-desc" content="" />
+
+  <!-- Open Graph / Social sharing -->
+  <meta property="og:type"        content="music.album" />
+  <meta property="og:title"       id="og-title"  content="" />
+  <meta property="og:description" id="og-desc"   content="" />
+  <meta property="og:image"       id="og-image"  content="" />
+
+  <!-- Google Fonts (loaded via JS from config) -->
+  <link id="gfont-link" rel="stylesheet" href="" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent:       #FF6B35;
+      --accent-glow:  #FF6B3540;
+      --bg:           #0A0A0A;
+      --bg-card:      #111111;
+      --bg-hover:     #1A1A1A;
+      --text:         #F5F5F0;
+      --muted:        #888882;
+      --font:         'Space Grotesk', sans-serif;
+      --font-display: 'Bebas Neue', cursive;
+      --radius:       12px;
+      --transition:   0.2s ease;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 0 64px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center top;
+      filter: blur(22px) brightness(0.35) saturate(1.4);
+      transform: scale(1.08);
+      z-index: 0;
+    }
+
+    .hero-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0,0,0,0.3) 40%,
+        var(--bg) 100%
+      );
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      align-items: flex-end;
+      gap: 48px;
+    }
+
+    .cover-wrap {
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .cover-art {
+      width: clamp(180px, 22vw, 280px);
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      object-fit: cover;
+      display: block;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.06);
+    }
+
+    .cover-placeholder {
+      width: clamp(180px, 22vw, 280px);
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.06);
+    }
+
+    .hero-meta {
+      flex: 1;
+      padding-bottom: 8px;
+    }
+
+    .project-type-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(42px, 8vw, 88px);
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .hero-artist {
+      font-size: clamp(15px, 2vw, 19px);
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .hero-stat-label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .hero-stat-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .hero-desc {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    /* ── STREAMING BUTTONS ───────────────────────────── */
+    .streaming-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-stream {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: 40px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-decoration: none;
+      transition: var(--transition);
+      cursor: pointer;
+      border: none;
+      white-space: nowrap;
+    }
+
+    .btn-stream.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-stream.primary:hover {
+      filter: brightness(1.12);
+      transform: translateY(-1px);
+    }
+
+    .btn-stream.outline {
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .btn-stream.outline:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.2);
+      transform: translateY(-1px);
+    }
+
+    .btn-stream svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+
+    /* ── MAIN CONTENT ────────────────────────────────── */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 32px 80px;
+    }
+
+    /* ── SECTION LABELS ──────────────────────────────── */
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-top: 56px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+    }
+
+    /* ── TRACKLIST ───────────────────────────────────── */
+    .tracklist {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .track-row {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background var(--transition);
+      position: relative;
+    }
+
+    .track-row:hover {
+      background: var(--bg-hover);
+    }
+
+    .track-row.active {
+      background: var(--bg-card);
+    }
+
+    .track-row.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      background: var(--accent);
+      border-radius: 0 2px 2px 0;
+    }
+
+    .track-num {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      transition: var(--transition);
+    }
+
+    .track-row.active .track-num,
+    .track-row:hover .track-num {
+      color: var(--accent);
+    }
+
+    /* Playing animation */
+    .track-row.playing .track-num {
+      display: none;
+    }
+    .track-row.playing .playing-bars {
+      display: flex;
+    }
+
+    .playing-bars {
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 2px;
+      height: 14px;
+      width: 36px;
+    }
+
+    .playing-bars span {
+      width: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      animation: soundbar 0.8s ease-in-out infinite;
+    }
+    .playing-bars span:nth-child(2) { animation-delay: 0.15s; }
+    .playing-bars span:nth-child(3) { animation-delay: 0.3s; }
+    .playing-bars span:nth-child(4) { animation-delay: 0.45s; }
+
+    @keyframes soundbar {
+      0%, 100% { height: 4px; }
+      50% { height: 14px; }
+    }
+
+    .track-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .track-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .track-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: 0.01em;
+    }
+
+    .track-row.active .track-title {
+      color: var(--accent);
+    }
+
+    .explicit-badge {
+      flex-shrink: 0;
+      font-size: 9px;
+      font-weight: 700;
+      background: var(--muted);
+      color: var(--bg);
+      padding: 1px 4px;
+      border-radius: 3px;
+      letter-spacing: 0.05em;
+    }
+
+    .track-feat {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .track-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .track-links {
+      display: flex;
+      gap: 6px;
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    .track-row:hover .track-links {
+      opacity: 1;
+    }
+
+    .track-link-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: none;
+      cursor: pointer;
+      transition: background var(--transition);
+      text-decoration: none;
+    }
+
+    .track-link-btn:hover {
+      background: rgba(255,255,255,0.14);
+    }
+
+    .track-link-btn svg {
+      width: 13px;
+      height: 13px;
+      fill: var(--muted);
+    }
+
+    .track-link-btn:hover svg {
+      fill: var(--text);
+    }
+
+    .track-duration {
+      font-size: 13px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      min-width: 36px;
+      text-align: right;
+    }
+
+    /* ── PLAYER BAR ──────────────────────────────────── */
+    .player-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(24px) saturate(1.4);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 12px 24px;
+      z-index: 100;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .player-bar.visible {
+      transform: translateY(0);
+    }
+
+    .player-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .player-track-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .player-cover {
+      width: 42px;
+      height: 42px;
+      border-radius: 6px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .player-cover-placeholder {
+      width: 42px;
+      height: 42px;
+      border-radius: 6px;
+      background: var(--bg-hover);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .player-name {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .player-artist {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .player-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .player-btns {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ctrl-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 6px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color var(--transition), background var(--transition);
+    }
+
+    .ctrl-btn:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.07);
+    }
+
+    .ctrl-btn svg { width: 16px; height: 16px; }
+
+    .play-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: filter var(--transition), transform var(--transition);
+      color: #fff;
+    }
+
+    .play-btn:hover { filter: brightness(1.12); transform: scale(1.05); }
+    .play-btn svg { width: 16px; height: 16px; }
+
+    .player-progress {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 340px;
+      max-width: 100%;
+    }
+
+    .time-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      min-width: 32px;
+    }
+
+    .time-label.right { text-align: right; }
+
+    .progress-track {
+      flex: 1;
+      height: 3px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.1s linear;
+      position: relative;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      right: -5px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      background: var(--text);
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    .progress-track:hover .progress-fill::after { opacity: 1; }
+
+    .player-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .volume-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .volume-row svg { width: 14px; height: 14px; color: var(--muted); flex-shrink: 0; }
+
+    input[type="range"].vol-slider {
+      -webkit-appearance: none;
+      width: 80px;
+      height: 3px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+
+    /* ── CREDITS ─────────────────────────────────────── */
+    .credits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .credit-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+    }
+
+    .credit-role {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .credit-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ── SOCIAL / FOOTER ─────────────────────────────── */
+    .social-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: 40px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      background: var(--bg-card);
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.07);
+      transition: var(--transition);
+    }
+
+    .social-btn:hover {
+      color: var(--text);
+      border-color: rgba(255,255,255,0.18);
+      transform: translateY(-1px);
+    }
+
+    .social-btn svg { width: 15px; height: 15px; }
+
+    .footer {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      margin-top: 60px;
+      padding: 28px 0 100px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width: 700px) {
+      .hero-content {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0 20px;
+        gap: 24px;
+      }
+      .hero { min-height: unset; padding-top: 80px; padding-bottom: 40px; }
+      .main { padding: 0 20px 80px; }
+      .player-inner {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .player-right { justify-content: center; }
+      .player-track-info { justify-content: center; }
+      .player-progress { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── HERO ───────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-bg" id="hero-bg"></div>
+    <div class="hero-gradient"></div>
+    <div class="hero-content">
+      <div class="cover-wrap">
+        <div class="cover-placeholder" id="cover-placeholder">🎵</div>
+        <img class="cover-art" id="cover-img" src="" alt="" style="display:none" />
+      </div>
+      <div class="hero-meta">
+        <div class="project-type-badge" id="badge-type">MIXTAPE</div>
+        <h1 class="hero-title" id="hero-title">LOADING</h1>
+        <div class="hero-artist" id="hero-artist">Artist Name</div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="hero-stat-label">Year</span>
+            <span class="hero-stat-value" id="stat-year">—</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-label">Tracks</span>
+            <span class="hero-stat-value" id="stat-tracks">—</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-label">Genre</span>
+            <span class="hero-stat-value" id="stat-genre">—</span>
+          </div>
+        </div>
+        <p class="hero-desc" id="hero-desc"></p>
+        <div class="streaming-row" id="streaming-row"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MAIN ───────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Tracklist -->
+    <div class="section-label">Tracklist</div>
+    <div class="tracklist" id="tracklist"></div>
+
+    <!-- Credits -->
+    <div class="section-label" id="credits-label" style="display:none">Credits</div>
+    <div class="credits-grid" id="credits-grid"></div>
+
+    <!-- Social -->
+    <div class="section-label" id="social-label" style="display:none">Follow</div>
+    <div class="social-row" id="social-row"></div>
+
+    <div class="footer" id="footer"></div>
+  </main>
+
+  <!-- ── PLAYER BAR ──────────────────────────────────── -->
+  <div class="player-bar" id="player-bar">
+    <div class="player-inner">
+      <!-- Track info -->
+      <div class="player-track-info">
+        <div class="player-cover-placeholder" id="player-cover-placeholder">🎵</div>
+        <img class="player-cover" id="player-cover-img" src="" alt="" style="display:none" />
+        <div>
+          <div class="player-name" id="player-track-name">—</div>
+          <div class="player-artist" id="player-artist-name">—</div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="player-controls">
+        <div class="player-btns">
+          <button class="ctrl-btn" id="btn-prev" title="Previous">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+          </button>
+          <button class="play-btn" id="btn-play" title="Play/Pause">
+            <svg id="icon-play"  viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          </button>
+          <button class="ctrl-btn" id="btn-next" title="Next">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2.5-6 6-4.25V16.25L8.5 12zM16 6h2v12h-2z"/></svg>
+          </button>
+        </div>
+        <div class="player-progress">
+          <span class="time-label" id="time-current">0:00</span>
+          <div class="progress-track" id="progress-track">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <span class="time-label right" id="time-total">0:00</span>
+        </div>
+      </div>
+
+      <!-- Volume -->
+      <div class="player-right">
+        <div class="volume-row">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+          <input type="range" class="vol-slider" id="vol-slider" min="0" max="1" step="0.01" value="1" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden audio element -->
+  <audio id="audio-player" preload="metadata"></audio>
+
+  <!-- Config must load before app.js -->
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
